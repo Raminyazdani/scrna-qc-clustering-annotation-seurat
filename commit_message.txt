@@ -1,0 +1,16 @@
+Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(setup): Initial commit - Project structure and documentation
+
+Set up the basic repository structure with README, .gitignore, and initial documentation. 
+Established the project goals, requirements, and expected data inputs for single-cell RNA 
+sequencing analysis of bone marrow samples.
+
+Files created:
+- README.md with project overview and initial goals
+- .gitignore with R-specific ignores (*.rds, *.RData, *.Rhistory, .Rproj.user, plots/, outputs/)
+- .github/ directory with basic templates
+
+This commit establishes the project foundation and documentation before any code implementation.
+Every good project starts with clear documentation and proper ignore rules to maintain a clean
+repository structure throughout development.
+
+Verified by: Manual inspection of initial files and structure.

@@ -1,0 +1,7 @@
+*.rds
+*.RData
+*.Rhistory
+.Rproj.user
+plots/
+outputs/
+.DS_Store
