@@ -1,7 +1,27 @@
+# R output files
 *.rds
 *.RData
 *.Rhistory
+
+# Generated plots and images
+*.png
+*.jpg
+*.jpeg
+*.pdf
+
+# R session data
 .Rproj.user
-plots/
-outputs/
+.Rhistory
+.RData
+.Ruserdata
+
+# Temporary files
+*~
+*.tmp
+*.swp
 .DS_Store
+
+# Output directories (keep structure but not files)
+results/
+plots/
+output/

@@ -1,16 +1,20 @@
-Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(setup): Initial commit - Project structure and documentation
+Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(data-loading): Add data loading functions and initial setup
 
-Set up the basic repository structure with README, .gitignore, and initial documentation. 
-Established the project goals, requirements, and expected data inputs for single-cell RNA 
-sequencing analysis of bone marrow samples.
+Implemented core helper functions for loading scRNA-seq datasets from RDS files. Set up library 
+imports, configured parallel processing, and established reproducible random seed.
 
-Files created:
-- README.md with project overview and initial goals
-- .gitignore with R-specific ignores (*.rds, *.RData, *.Rhistory, .Rproj.user, plots/, outputs/)
-- .github/ directory with basic templates
+Created scrna_analysis.r with:
+- Library imports (Seurat, ggplot2, dplyr, etc.)
+- Reproducibility: set.seed(42)
+- Performance: parallel processing configuration with options(mc.cores = detectCores() - 1)
+- get_sample_info() function to extract sample metadata
+- loadDataSet() function to load RDS files into Seurat objects
+- addMetaData() function to add donor, replicate, and sex metadata
 
-This commit establishes the project foundation and documentation before any code implementation.
-Every good project starts with clear documentation and proper ignore rules to maintain a clean
-repository structure throughout development.
+Configured for portability using getwd() for project root detection. Sample metadata structure 
+defined for 4 samples: 2 BMMC replicates and 2 CD34+ samples.
 
-Verified by: Manual inspection of initial files and structure.
+Establishing the foundation for data loading is essential before any analysis. Reproducibility 
+(random seed) and performance (parallel processing) configured from the start.
+
+Verified by: Code review of data loading functions and structure.

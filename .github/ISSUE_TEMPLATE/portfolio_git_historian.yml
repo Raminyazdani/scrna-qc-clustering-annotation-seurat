@@ -1,0 +1,67 @@
+name: "Portfolio + Git Historian (single project folder)"
+description: "Make one folder portfolio-ready + generate git-history snapshots under history/<folder>/"
+title: "[Portfolio+History] <PROJECT_FOLDER>: "
+labels: ["copilot", "portfolio", "git-history"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## Use this template for ONE top-level folder
+        - Fill **Target folder** with an existing top-level folder name.
+        - This issue is designed for **Copilot Coding Agent**.
+        - Keep requirements tight and folder-scoped.
+
+        **Note:** GitHub Issue Forms cannot auto-insert one field into another field.  
+        If you paste a generated issue body (from the script below), you don’t need to edit anything.
+
+  - type: input
+    id: project_folder
+    attributes:
+      label: Target project folder (top-level)
+      description: "Exact folder name in repo root. Example: assignment_4"
+      placeholder: "assignment_4"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: origin
+    attributes:
+      label: Project origin
+      description: "Helps framing in naming.txt and README."
+      options:
+        - assignment
+        - course
+        - university
+        - personal
+        - unknown
+      default: 4
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: knobs
+    attributes:
+      label: Optional knobs (Copilot may still use best judgment)
+      options:
+        - label: "Allow internal renames when SAFE (update references; keep runnable)"
+        - label: "Require runnable verification (tests / smoke-run if possible)"
+        - label: "If CI/workflows exist in final project, include them in git-history"
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Special notes (optional)
+      description: "Dataset location, expected outputs, known blockers, etc."
+      placeholder: |
+        Example:
+        - Dataset is not included; instructions are in docs/data_source.md
+        - Run command should be executed from project root
+
+  - type: textarea
+    id: task_prompt
+    attributes:
+      label: Copilot task prompt (paste the generated prompt here)
+      description: "If you used the script, paste the body here unchanged."
+      placeholder: "Use the script output, or paste your unified super prompt for this folder."
+    validations:
+      required: true
