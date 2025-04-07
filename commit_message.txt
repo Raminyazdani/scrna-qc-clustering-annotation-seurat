@@ -1,20 +1,21 @@
-Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(data-loading): Add data loading functions and initial setup
+Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(qc): Implement QC metrics calculation functions
 
-Implemented core helper functions for loading scRNA-seq datasets from RDS files. Set up library 
-imports, configured parallel processing, and established reproducible random seed.
+Added functions to calculate standard scRNA-seq quality control metrics including mitochondrial, 
+hemoglobin, ribosomal, and ERCC spike-in percentages. These metrics are the foundation of quality 
+control and must be calculated before filtering.
 
-Created scrna_analysis.r with:
-- Library imports (Seurat, ggplot2, dplyr, etc.)
-- Reproducibility: set.seed(42)
-- Performance: parallel processing configuration with options(mc.cores = detectCores() - 1)
-- get_sample_info() function to extract sample metadata
-- loadDataSet() function to load RDS files into Seurat objects
-- addMetaData() function to add donor, replicate, and sex metadata
+Modified scrna_analysis.r to add:
+- Calculate mitochondrial gene percentage (^MT-) to identify dying cells
+- Calculate hemoglobin gene percentage (^HB[^(P)]) to detect blood contamination
+- Calculate ribosomal gene percentage (^RP[SL]) to assess ribosome abundance
+- Calculate ERCC spike-in percentage (^ERCC) for technical controls
+- Functions to add these metrics to Seurat object metadata
 
-Configured for portability using getwd() for project root detection. Sample metadata structure 
-defined for 4 samples: 2 BMMC replicates and 2 CD34+ samples.
+Implementation uses regex-based gene set identification and calculates percentages relative to 
+total UMI counts. These metrics identify low-quality cells, dying cells (high mt%), and technical 
+artifacts that should be removed before downstream analysis.
 
-Establishing the foundation for data loading is essential before any analysis. Reproducibility 
-(random seed) and performance (parallel processing) configured from the start.
+QC metrics are essential for identifying problematic cells. Mitochondrial content is particularly 
+important as high mt% indicates dying/stressed cells. These metrics inform filtering thresholds.
 
-Verified by: Code review of data loading functions and structure.
+Verified by: Manual code review of QC metric calculations.
