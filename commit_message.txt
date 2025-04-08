@@ -1,21 +1,22 @@
-Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(qc): Implement QC metrics calculation functions
+Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(qc): Implement threshold-based QC filtering strategy
 
-Added functions to calculate standard scRNA-seq quality control metrics including mitochondrial, 
-hemoglobin, ribosomal, and ERCC spike-in percentages. These metrics are the foundation of quality 
-control and must be calculated before filtering.
+Implemented the first QC filtering approach using hard thresholds for minimum/maximum gene counts, 
+UMI counts, and mitochondrial percentage. This provides a baseline filtering strategy.
 
 Modified scrna_analysis.r to add:
-- Calculate mitochondrial gene percentage (^MT-) to identify dying cells
-- Calculate hemoglobin gene percentage (^HB[^(P)]) to detect blood contamination
-- Calculate ribosomal gene percentage (^RP[SL]) to assess ribosome abundance
-- Calculate ERCC spike-in percentage (^ERCC) for technical controls
-- Functions to add these metrics to Seurat object metadata
+- filter_QC_threshold() function with conservative thresholds:
+  * Min genes per cell: 200 (standard literature minimum)
+  * Max genes per cell: 6000 (removes potential doublets)
+  * Min UMIs per cell: 500 (ensures sufficient sequencing depth)
+  * Max mitochondrial %: 20% (removes dying/stressed cells)
+- Visualization functions for pre/post filtering comparison
+- Cell count summaries to quantify filtering impact
 
-Implementation uses regex-based gene set identification and calculates percentages relative to 
-total UMI counts. These metrics identify low-quality cells, dying cells (high mt%), and technical 
-artifacts that should be removed before downstream analysis.
+Threshold-based filtering is the most common QC approach in scRNA-seq analysis. These thresholds 
+are based on literature standards and provide interpretable, reproducible filtering rules. The 
+approach is simple, fast, and provides a baseline for comparison with statistical methods.
 
-QC metrics are essential for identifying problematic cells. Mitochondrial content is particularly 
-important as high mt% indicates dying/stressed cells. These metrics inform filtering thresholds.
+Conservative thresholds balance quality control with cell retention to maintain statistical power 
+and avoid biasing cell type composition.
 
-Verified by: Manual code review of QC metric calculations.
+Verified by: Code review of threshold values and filtering logic.
