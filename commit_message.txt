@@ -1,22 +1,23 @@
-Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(qc): Implement threshold-based QC filtering strategy
+Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(qc): Implement outlier detection QC filtering with MAD
 
-Implemented the first QC filtering approach using hard thresholds for minimum/maximum gene counts, 
-UMI counts, and mitochondrial percentage. This provides a baseline filtering strategy.
+Implemented statistical outlier detection using Median Absolute Deviation (MAD) for adaptive, 
+data-driven QC thresholds. This provides an alternative to fixed thresholds that adapts to each 
+dataset's distribution.
 
 Modified scrna_analysis.r to add:
-- filter_QC_threshold() function with conservative thresholds:
-  * Min genes per cell: 200 (standard literature minimum)
-  * Max genes per cell: 6000 (removes potential doublets)
-  * Min UMIs per cell: 500 (ensures sufficient sequencing depth)
-  * Max mitochondrial %: 20% (removes dying/stressed cells)
-- Visualization functions for pre/post filtering comparison
-- Cell count summaries to quantify filtering impact
+- filter_QC_outlier() function implementing MAD-based outlier detection:
+  * Calculate MAD for log10(nCount) and log10(nFeature)
+  * Identify outliers as cells >3 MADs from median
+  * Remove cells with mitochondrial % >20% (fixed threshold for biological reasons)
+- Outlier visualization functions showing distribution and cutoffs
+- Comparison statistics with threshold method
 
-Threshold-based filtering is the most common QC approach in scRNA-seq analysis. These thresholds 
-are based on literature standards and provide interpretable, reproducible filtering rules. The 
-approach is simple, fast, and provides a baseline for comparison with statistical methods.
+Outlier detection adapts to each dataset's distribution rather than using universal thresholds, 
+making it more appropriate for diverse datasets. MAD is robust to extreme values and handles 
+skewed distributions better than standard deviation. This approach complements hard thresholds 
+by being data-driven.
 
-Conservative thresholds balance quality control with cell retention to maintain statistical power 
-and avoid biasing cell type composition.
+The 3-MAD cutoff is standard in statistics for identifying extreme outliers while being 
+conservative enough to avoid removing good cells from natural biological variation.
 
-Verified by: Code review of threshold values and filtering logic.
+Verified by: Code review of MAD calculation and outlier detection logic.
