@@ -1,23 +1,26 @@
-Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(qc): Implement outlier detection QC filtering with MAD
+Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | WIP(qc): Add combined QC filtering strategy
 
-Implemented statistical outlier detection using Median Absolute Deviation (MAD) for adaptive, 
-data-driven QC thresholds. This provides an alternative to fixed thresholds that adapts to each 
-dataset's distribution.
+Combined threshold and outlier filtering approaches for comprehensive QC. Applied both methods 
+sequentially to leverage strengths of each approach. However, threshold values were set too 
+strictly in this implementation.
 
 Modified scrna_analysis.r to add:
-- filter_QC_outlier() function implementing MAD-based outlier detection:
-  * Calculate MAD for log10(nCount) and log10(nFeature)
-  * Identify outliers as cells >3 MADs from median
-  * Remove cells with mitochondrial % >20% (fixed threshold for biological reasons)
-- Outlier visualization functions showing distribution and cutoffs
-- Comparison statistics with threshold method
+- filter_QC_combined() function:
+  * First apply outlier detection (MAD-based)
+  * Then apply threshold filtering
 
-Outlier detection adapts to each dataset's distribution rather than using universal thresholds, 
-making it more appropriate for diverse datasets. MAD is robust to extreme values and handles 
-skewed distributions better than standard deviation. This approach complements hard thresholds 
-by being data-driven.
+MISTAKE INTRODUCED: Used overly strict threshold values:
+- Min genes per cell: 500 (too strict, should be 200)
+- Max mitochondrial %: 15% (too strict, should be 20%)
 
-The 3-MAD cutoff is standard in statistics for identifying extreme outliers while being 
-conservative enough to avoid removing good cells from natural biological variation.
+These strict thresholds would remove too many good quality cells, reducing statistical power and 
+potentially biasing cell type composition. The min genes threshold of 500 is unnecessarily high 
+and could remove valid cell types with naturally lower gene expression.
 
-Verified by: Code review of MAD calculation and outlier detection logic.
+Combining methods leverages strengths of both approaches - outlier detection provides adaptive 
+filtering while thresholds enforce biological constraints. However, incorrect parameter choices 
+can negate these benefits.
+
+This will be fixed in the next commit.
+
+Verified by: N/A - contains known error to be fixed.
