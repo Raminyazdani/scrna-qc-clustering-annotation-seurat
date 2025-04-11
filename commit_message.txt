@@ -1,26 +1,22 @@
-Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | WIP(qc): Add combined QC filtering strategy
+Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(qc): Fix overly strict QC threshold values
 
-Combined threshold and outlier filtering approaches for comprehensive QC. Applied both methods 
-sequentially to leverage strengths of each approach. However, threshold values were set too 
-strictly in this implementation.
+Fixed the QC thresholds in combined filtering strategy that were too strict and would have removed 
+valid cells with good quality. Reverted to standard literature-based thresholds.
 
-Modified scrna_analysis.r to add:
-- filter_QC_combined() function:
-  * First apply outlier detection (MAD-based)
-  * Then apply threshold filtering
+Modified scrna_analysis.r:
+- Min genes per cell: 500 → 200 (standard minimum from literature)
+- Max mitochondrial %: 15% → 20% (standard maximum for dying cells)
 
-MISTAKE INTRODUCED: Used overly strict threshold values:
-- Min genes per cell: 500 (too strict, should be 200)
-- Max mitochondrial %: 15% (too strict, should be 20%)
+The previous overly strict thresholds (min genes=500, max mt%=15%) would have removed many good 
+quality cells. Cells with 200-500 genes can still represent valid biological states, especially 
+for certain cell types with naturally lower transcriptional activity. Similarly, the 15% mt% 
+cutoff is too conservative and would unnecessarily exclude cells.
 
-These strict thresholds would remove too many good quality cells, reducing statistical power and 
-potentially biasing cell type composition. The min genes threshold of 500 is unnecessarily high 
-and could remove valid cell types with naturally lower gene expression.
+Proper threshold selection is critical in scRNA-seq QC. Too strict thresholds lead to loss of 
+good cells, reduced statistical power, and potentially biased cell type composition. Too lenient 
+thresholds lead to inclusion of low-quality cells that add noise. Literature standards (200 genes 
+minimum, 20% mt maximum) provide a good balance based on extensive empirical evidence.
 
-Combining methods leverages strengths of both approaches - outlier detection provides adaptive 
-filtering while thresholds enforce biological constraints. However, incorrect parameter choices 
-can negate these benefits.
+This fix ensures the combined QC strategy properly balances quality control with cell retention.
 
-This will be fixed in the next commit.
-
-Verified by: N/A - contains known error to be fixed.
+Verified by: Code review confirming threshold values match literature standards.
