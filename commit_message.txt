@@ -1,22 +1,23 @@
-Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(qc): Fix overly strict QC threshold values
+Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(qc): Implement QC strategy comparison and visualization suite
 
-Fixed the QC thresholds in combined filtering strategy that were too strict and would have removed 
-valid cells with good quality. Reverted to standard literature-based thresholds.
+Added comprehensive visualization functions to compare the three QC strategies (threshold-only, 
+outlier-only, combined) and select the optimal approach based on visual and quantitative assessment.
 
-Modified scrna_analysis.r:
-- Min genes per cell: 500 → 200 (standard minimum from literature)
-- Max mitochondrial %: 15% → 20% (standard maximum for dying cells)
+Modified scrna_analysis.r to add:
+- Side-by-side violin plots comparing pre/post QC for each strategy
+- Cell retention statistics table quantifying filtering impact
+- Scatter plots with density coloring for nCount vs nFeature
+- Final QC visualization suite with multiple panels
+- Selected "outlier then threshold" (combined) as optimal strategy
 
-The previous overly strict thresholds (min genes=500, max mt%=15%) would have removed many good 
-quality cells. Cells with 200-500 genes can still represent valid biological states, especially 
-for certain cell types with naturally lower transcriptional activity. Similarly, the 15% mt% 
-cutoff is too conservative and would unnecessarily exclude cells.
+The visualization suite enables data-driven comparison of QC strategies. Key metrics evaluated:
+- Number of cells retained (balance QC stringency with statistical power)
+- Distribution changes in QC metrics (ensure problematic cells removed)
+- Visual separation between kept and removed cells
 
-Proper threshold selection is critical in scRNA-seq QC. Too strict thresholds lead to loss of 
-good cells, reduced statistical power, and potentially biased cell type composition. Too lenient 
-thresholds lead to inclusion of low-quality cells that add noise. Literature standards (200 genes 
-minimum, 20% mt maximum) provide a good balance based on extensive empirical evidence.
+Comparing multiple QC strategies ensures we choose the optimal approach for this specific dataset. 
+Visual and quantitative comparison informs the decision. Documenting the choice and rationale 
+provides transparency and justification for the selected strategy. The combined approach was 
+selected as it provides both data-adaptive and biology-constrained filtering.
 
-This fix ensures the combined QC strategy properly balances quality control with cell retention.
-
-Verified by: Code review confirming threshold values match literature standards.
+Verified by: Code review of visualization functions and comparison logic.
