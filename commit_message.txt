@@ -1,24 +1,25 @@
-Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | WIP(doublet): Integrate DoubletFinder for doublet detection
+Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(doublet): Fix DoubletFinder library import typo
 
-Added DoubletFinder integration to identify and remove doublets (two cells mistaken as one droplet), 
-which can create artificial cell types in clustering analysis. Contains library import typo.
+Fixed typo in DoubletFinder import statement that would have caused runtime error when loading 
+the package. Also added installation instructions for clarity.
 
-Modified scrna_analysis.r to add:
-- DoubletFinder parameter sweep for optimal pK selection
-- pN-pN plot analysis to identify optimal neighborhood size
-- Expected doublet rate calculation based on 10X Genomics loading guidelines
-- Doublet classification and scoring for all cells
-- Doublet removal workflow
+Modified scrna_analysis.r:
+- Line 13: library(DoubletFider) → library(DoubletFinder)
+- Added installation comment:
+  # Install from GitHub if not already installed:
+  # remotes::install_github("chris-mcginnis-ucsf/DoubletFinder")
+  library(DoubletFinder)
 
-MISTAKE INTRODUCED: Used `library(DoubletFider)` with typo in package name (should be 
-DoubletFinder). This would cause "package 'DoubletFider' not found" error at runtime.
+The typo "DoubletFider" instead of "DoubletFinder" would cause immediate failure when R tries to 
+load the package, with error: "there is no package called 'DoubletFider'". This would prevent the 
+entire script from running.
 
-Doublets are a major technical artifact in droplet-based scRNA-seq that can mislead clustering 
-analysis. When two cells are captured in the same droplet, they appear as a single cell with 
-mixed transcriptional profiles. This can create false cell type clusters or obscure real biological 
-variation. DoubletFinder uses simulated doublets and nearest-neighbor analysis to identify these 
-artifacts. Essential QC step before clustering and annotation.
+Package names in R must be exact - even a single character difference causes failure. The fix 
+corrects the spelling to the actual package name. Adding installation instructions helps users 
+who don't have the package installed yet, as DoubletFinder is not on CRAN and must be installed 
+from GitHub using remotes or devtools.
 
-This will be fixed in the next commit.
+This ensures the script can properly load DoubletFinder and proceed with doublet detection, which 
+is essential for removing technical artifacts before clustering.
 
-Verified by: N/A - contains known error to be fixed.
+Verified by: Package name verification against GitHub repository chris-mcginnis-ucsf/DoubletFinder.
