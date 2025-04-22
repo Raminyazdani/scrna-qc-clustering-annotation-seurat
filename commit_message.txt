@@ -1,25 +1,24 @@
-Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(doublet): Fix DoubletFinder library import typo
+Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(normalization): Implement data normalization and variable feature selection
 
-Fixed typo in DoubletFinder import statement that would have caused runtime error when loading 
-the package. Also added installation instructions for clarity.
+Implemented log-normalization and highly variable gene identification to focus analysis on genes 
+with biological signal rather than technical noise. Essential preprocessing step before 
+dimensionality reduction.
 
-Modified scrna_analysis.r:
-- Line 13: library(DoubletFider) → library(DoubletFinder)
-- Added installation comment:
-  # Install from GitHub if not already installed:
-  # remotes::install_github("chris-mcginnis-ucsf/DoubletFinder")
-  library(DoubletFinder)
+Modified scrna_analysis.r to add:
+- NormalizeData() with log-normalization and default scale factor of 10,000
+- FindVariableFeatures() using variance stabilizing transformation (vst method)
+- Selection of top 2000 variable genes for downstream analysis
+- Visualization of variance-mean relationship across genes
+- Top 10 most variable genes labeled on plot for interpretation
 
-The typo "DoubletFider" instead of "DoubletFinder" would cause immediate failure when R tries to 
-load the package, with error: "there is no package called 'DoubletFider'". This would prevent the 
-entire script from running.
+Log-normalization corrects for differences in sequencing depth across cells, making expression 
+values comparable. The scale factor (10,000) normalizes to counts per 10,000 molecules. Variable 
+feature selection identifies genes with high cell-to-cell variation that likely reflect biological 
+processes rather than technical noise.
 
-Package names in R must be exact - even a single character difference causes failure. The fix 
-corrects the spelling to the actual package name. Adding installation instructions helps users 
-who don't have the package installed yet, as DoubletFinder is not on CRAN and must be installed 
-from GitHub using remotes or devtools.
+Focusing on variable genes (2000 of ~20,000 total) reduces dimensionality while retaining 
+biological signal. This improves computational efficiency and increases signal-to-noise ratio for 
+downstream clustering. The vst method is more stable than traditional mean-variance relationship 
+modeling.
 
-This ensures the script can properly load DoubletFinder and proceed with doublet detection, which 
-is essential for removing technical artifacts before clustering.
-
-Verified by: Package name verification against GitHub repository chris-mcginnis-ucsf/DoubletFinder.
+Verified by: Code review of normalization and feature selection parameters.
