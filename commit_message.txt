@@ -1,28 +1,24 @@
-Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(pca): Implement data scaling and principal component analysis
+Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(pca): Implement automatic PC selection with multiple criteria
 
-Added data scaling to normalize gene expression levels and PCA for initial dimensionality reduction 
-from thousands of genes to interpretable principal components.
+Added automatic selection of significant principal components using multiple complementary criteria 
+to remove subjective decision-making and adapt to dataset complexity.
 
 Modified scrna_analysis.r to add:
-- ScaleData() on variable features:
-  * Centers data to mean = 0 for each gene
-  * Scales data to variance = 1 for each gene  
-  * Optional regression of unwanted variation sources
-- RunPCA() with 50 principal components calculated
-- PCA visualization functions:
-  * PC loadings showing genes contributing to each PC
-  * PC scatter plots (PC1 vs PC2, etc.)
-  * Colored by sample, cell type, or QC metrics
+- Cumulative variance explained calculation across PCs
+- Elbow method: identifies where scree plot curve flattens
+- 90% variance threshold: finds minimum PCs explaining 90% of variance
+- Standard deviation analysis: identifies where PC stdev drops below 5%
+- Conservative selection: takes minimum of all methods to avoid overfitting
+- Elbow plot visualization with selected PC count marked
 
-Scaling (z-score normalization) ensures highly expressed genes don't dominate downstream analyses. 
-Without scaling, genes with high absolute expression would have more influence than genes with 
-high biological variation but lower expression.
+Implementation uses data-driven dimensionality selection rather than arbitrary fixed PC counts. 
+Multiple selection criteria provide robustness - if one method fails or gives unreasonable result, 
+others compensate. Taking the minimum (conservative approach) ensures we don't include noisy PCs 
+that could harm clustering.
 
-PCA reduces dimensionality from thousands of genes to tens of principal components while retaining 
-the major sources of variation in the data. This dramatically improves computational efficiency 
-for clustering while removing technical noise captured in later PCs.
+Automatic PC selection is critical because optimal dimensionality varies by dataset. Too few PCs 
+lose biological signal. Too many PCs include technical noise. Data-driven selection adapts to each 
+dataset's complexity and signal-to-noise characteristics. Visual validation through elbow plots 
+allows manual verification of automated selection.
 
-Calculated 50 PCs (more than typically needed) to allow flexible downstream selection of optimal 
-dimensionality for this dataset.
-
-Verified by: Code review of scaling and PCA implementation.
+Verified by: Code review of PC selection algorithms and visualization.
