@@ -1,24 +1,28 @@
-Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(normalization): Implement data normalization and variable feature selection
+Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(pca): Implement data scaling and principal component analysis
 
-Implemented log-normalization and highly variable gene identification to focus analysis on genes 
-with biological signal rather than technical noise. Essential preprocessing step before 
-dimensionality reduction.
+Added data scaling to normalize gene expression levels and PCA for initial dimensionality reduction 
+from thousands of genes to interpretable principal components.
 
 Modified scrna_analysis.r to add:
-- NormalizeData() with log-normalization and default scale factor of 10,000
-- FindVariableFeatures() using variance stabilizing transformation (vst method)
-- Selection of top 2000 variable genes for downstream analysis
-- Visualization of variance-mean relationship across genes
-- Top 10 most variable genes labeled on plot for interpretation
+- ScaleData() on variable features:
+  * Centers data to mean = 0 for each gene
+  * Scales data to variance = 1 for each gene  
+  * Optional regression of unwanted variation sources
+- RunPCA() with 50 principal components calculated
+- PCA visualization functions:
+  * PC loadings showing genes contributing to each PC
+  * PC scatter plots (PC1 vs PC2, etc.)
+  * Colored by sample, cell type, or QC metrics
 
-Log-normalization corrects for differences in sequencing depth across cells, making expression 
-values comparable. The scale factor (10,000) normalizes to counts per 10,000 molecules. Variable 
-feature selection identifies genes with high cell-to-cell variation that likely reflect biological 
-processes rather than technical noise.
+Scaling (z-score normalization) ensures highly expressed genes don't dominate downstream analyses. 
+Without scaling, genes with high absolute expression would have more influence than genes with 
+high biological variation but lower expression.
 
-Focusing on variable genes (2000 of ~20,000 total) reduces dimensionality while retaining 
-biological signal. This improves computational efficiency and increases signal-to-noise ratio for 
-downstream clustering. The vst method is more stable than traditional mean-variance relationship 
-modeling.
+PCA reduces dimensionality from thousands of genes to tens of principal components while retaining 
+the major sources of variation in the data. This dramatically improves computational efficiency 
+for clustering while removing technical noise captured in later PCs.
 
-Verified by: Code review of normalization and feature selection parameters.
+Calculated 50 PCs (more than typically needed) to allow flexible downstream selection of optimal 
+dimensionality for this dataset.
+
+Verified by: Code review of scaling and PCA implementation.
