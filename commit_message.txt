@@ -1,24 +1,25 @@
-Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(clustering): Implement multi-resolution clustering exploration
+Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(visualization): Implement UMAP and t-SNE visualization; create master processing function
 
-Extended clustering to test multiple resolution parameters, allowing systematic comparison of 
-granularity levels and selection of optimal clustering for biological interpretation.
+Added UMAP and t-SNE dimensionality reduction for 2D visualization. Created comprehensive 
+work_sample_seurat() function that orchestrates the entire processing pipeline from QC-filtered 
+object to fully processed, doublet-free dataset.
 
 Modified scrna_analysis.r to add:
-- Test multiple resolutions: 0.1, 0.3, 0.5, 0.8, 1.0, 1.2
-- Store all clustering results in Seurat object metadata for comparison
-- Side-by-side UMAP visualization grid showing all resolutions
-- Cluster count vs resolution plot to quantify granularity
-- Analysis tools to compare and select biologically meaningful resolution
+- RunUMAP() for 2D visualization preserving both local and global structure
+- RunTSNE() for alternative 2D visualization (local structure emphasis)
+- work_sample_seurat() master processing function:
+  * Input: QC-filtered Seurat object
+  * Pipeline steps: Normalize → Variable features → Scale → PCA → Auto PC selection → 
+    Cluster → UMAP → t-SNE → DoubletFinder → Remove doublets
+  * Output: Processed, doublet-free Seurat object with all embeddings
+  * Generates comprehensive PNG visualizations at each stage
 
-Systematic resolution testing reveals the hierarchical structure in the data. Low resolutions 
-(0.1-0.3) identify broad cell types, while high resolutions (1.0-1.2) identify subtypes and states. 
-No single "correct" resolution exists - the optimal choice depends on biological question and 
-desired granularity.
+The master function ensures consistent analysis across samples. Both UMAP and t-SNE provide 
+complementary views - UMAP better preserves global structure while t-SNE emphasizes local 
+neighborhoods. Cross-validation between methods helps confirm that observed structures are robust.
 
-Visual comparison helps select resolution matching biological expectations. For bone marrow, we 
-expect major cell types (T cells, B cells, monocytes, etc.) plus some subtypes. Testing range 
-from 0.1 to 1.2 covers from very coarse (few major groups) to fine-grained (many subtle 
-distinctions). This systematic exploration informs the final resolution choice for downstream 
-annotation and analysis.
+Integrated DoubletFinder removal ensures artifacts are removed before downstream analysis. 
+Extensive visualization outputs enable quality control at each processing stage. Reusable function 
+design allows efficient processing of multiple samples with identical methodology.
 
-Verified by: Code review of resolution testing implementation.
+Verified by: Code review of visualization and pipeline orchestration logic.
