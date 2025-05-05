@@ -1,25 +1,24 @@
-Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(clustering): Implement k-NN graph construction and Louvain clustering
+Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(clustering): Implement multi-resolution clustering exploration
 
-Implemented k-nearest neighbor graph construction and graph-based clustering using the Louvain 
-algorithm, which is more robust than k-means for the complex geometries typical in scRNA-seq data.
+Extended clustering to test multiple resolution parameters, allowing systematic comparison of 
+granularity levels and selection of optimal clustering for biological interpretation.
 
 Modified scrna_analysis.r to add:
-- FindNeighbors() using automatically selected PCs:
-  * k = 20 neighbors (standard default for scRNA-seq)
-  * Constructs shared nearest neighbor (SNN) graph
-  * Captures local structure in high-dimensional space
-- FindClusters() with Louvain community detection algorithm:
-  * Single resolution: 0.5 (moderate granularity)
-  * Optimizes modularity to find natural communities
-- Basic cluster visualization with UMAP initialization
+- Test multiple resolutions: 0.1, 0.3, 0.5, 0.8, 1.0, 1.2
+- Store all clustering results in Seurat object metadata for comparison
+- Side-by-side UMAP visualization grid showing all resolutions
+- Cluster count vs resolution plot to quantify granularity
+- Analysis tools to compare and select biologically meaningful resolution
 
-Graph-based clustering is the gold standard for scRNA-seq analysis. It's more robust to the 
-complex, non-convex geometries of single-cell data compared to methods like k-means. The SNN 
-graph construction captures local neighborhood relationships, which is crucial when biological 
-cell types may not be well-separated in global space.
+Systematic resolution testing reveals the hierarchical structure in the data. Low resolutions 
+(0.1-0.3) identify broad cell types, while high resolutions (1.0-1.2) identify subtypes and states. 
+No single "correct" resolution exists - the optimal choice depends on biological question and 
+desired granularity.
 
-The Louvain algorithm efficiently identifies densely connected communities (clusters) in the graph, 
-which correspond to cell types or states. Resolution parameter of 0.5 provides moderate granularity 
-suitable for identifying major cell types without excessive fragmentation.
+Visual comparison helps select resolution matching biological expectations. For bone marrow, we 
+expect major cell types (T cells, B cells, monocytes, etc.) plus some subtypes. Testing range 
+from 0.1 to 1.2 covers from very coarse (few major groups) to fine-grained (many subtle 
+distinctions). This systematic exploration informs the final resolution choice for downstream 
+annotation and analysis.
 
-Verified by: Code review of graph construction and clustering parameters.
+Verified by: Code review of resolution testing implementation.
