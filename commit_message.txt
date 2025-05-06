@@ -1,25 +1,24 @@
-Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(visualization): Implement UMAP and t-SNE visualization; create master processing function
+Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(data): Load all bone marrow samples and apply QC filtering
 
-Added UMAP and t-SNE dimensionality reduction for 2D visualization. Created comprehensive 
-work_sample_seurat() function that orchestrates the entire processing pipeline from QC-filtered 
-object to fully processed, doublet-free dataset.
+Implemented data loading for all 4 bone marrow samples (2 BMMC replicates from one donor, 2 CD34+ 
+samples from different donors) and applied the chosen QC filtering strategy consistently across 
+all samples.
 
-Modified scrna_analysis.r to add:
-- RunUMAP() for 2D visualization preserving both local and global structure
-- RunTSNE() for alternative 2D visualization (local structure emphasis)
-- work_sample_seurat() master processing function:
-  * Input: QC-filtered Seurat object
-  * Pipeline steps: Normalize → Variable features → Scale → PCA → Auto PC selection → 
-    Cluster → UMAP → t-SNE → DoubletFinder → Remove doublets
-  * Output: Processed, doublet-free Seurat object with all embeddings
-  * Generates comprehensive PNG visualizations at each stage
+Modified scrna_analysis.r to add execution code:
+- Set data folder: relative_path_data <- "data"
+- Load 4 samples with complete metadata:
+  * GSM4138872_scRNA_BMMC_D1T1.rds (Donor 1, BMMC replicate 1, Male)
+  * GSM4138873_scRNA_BMMC_D1T2.rds (Donor 1, BMMC replicate 2, Male)
+  * GSM4138874_scRNA_CD34_D2T1.rds (Donor 2, CD34+ enriched, Female)
+  * GSM4138875_scRNA_CD34_D3T1.rds (Donor 3, CD34+ enriched, Female)
+- Calculate QC metrics for all samples (mt%, hb%, rb%, ERCC%)
+- Apply chosen QC strategy (outlier + threshold combined) consistently
+- Generate per-sample QC violin plots for visual assessment
+- Save QC-filtered samples list for downstream processing
 
-The master function ensures consistent analysis across samples. Both UMAP and t-SNE provide 
-complementary views - UMAP better preserves global structure while t-SNE emphasizes local 
-neighborhoods. Cross-validation between methods helps confirm that observed structures are robust.
+Loading all samples enables comparison of QC distributions across samples and ensures consistent 
+filtering. Metadata tracking (donor, sex, cell type) is essential for identifying and correcting 
+batch effects. The 4 samples represent 2 biological conditions (BMMC vs CD34+) with appropriate 
+replication for statistical analysis.
 
-Integrated DoubletFinder removal ensures artifacts are removed before downstream analysis. 
-Extensive visualization outputs enable quality control at each processing stage. Reusable function 
-design allows efficient processing of multiple samples with identical methodology.
-
-Verified by: Code review of visualization and pipeline orchestration logic.
+Verified by: Code review of sample loading and QC application.
