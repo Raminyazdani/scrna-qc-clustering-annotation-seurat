@@ -1,27 +1,27 @@
-Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(processing): Process all 4 samples through complete analysis pipeline
+Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(integration): Merge all samples without batch correction for baseline
 
-Applied the complete processing pipeline (work_sample_seurat function) to each QC-filtered sample 
-individually, generating sample-specific results and removing doublets before multi-sample integration.
+Merged all 4 processed samples into a single Seurat object without batch correction, creating 
+a baseline to evaluate whether batch effects exist and whether batch correction is necessary.
 
 Modified scrna_analysis.r to add:
-- Loop applying work_sample_seurat() to each of 4 QC-filtered samples
-- Parallel processing of samples where possible for efficiency
-- Per-sample outputs generated:
-  * PCA plots with variance explained
-  * Elbow plots showing optimal PC selection
-  * UMAP plots colored by clusters, QC metrics, and metadata
-  * t-SNE plots for cross-validation of structure
-  * Feature plots showing key QC metrics and genes
-  * Doublet detection results and removal statistics
-- Save processed samples list: samples_seurats_list_qc_finished.rds
+- Simple merge() of all 4 samples into single object
+- Re-run normalization and scaling on merged data
+- PCA on merged object using variable features
+- Clustering on merged data with multiple resolutions
+- UMAP visualization colored by multiple variables:
+  * Sample origin (to visualize batch effects)
+  * Cluster assignments
+  * Donor ID (to see donor-specific patterns)
+  * Cell type/condition (BMMC vs CD34+)
+- Save as merged_samples_uncorrected.rds
 
-Processing samples individually before integration allows critical quality checks: (1) identify 
-sample-specific patterns or problems, (2) assess each sample's quality independently, (3) verify 
-good cell type representation in each sample, (4) detect technical issues that might affect 
-integration, (5) ensure doublet removal worked properly in each sample.
+Creating an uncorrected baseline is essential for evaluating integration quality. If samples 
+already mix well without correction, aggressive batch correction may not be needed and could 
+remove biological signal. If samples show strong separation by technical variables (donor, batch), 
+then integration is necessary.
 
-Individual sample clustering reveals whether cell types are present across samples or sample-
-specific, informing integration strategy. This step is essential quality control before pooling 
-samples.
+Visual inspection of UMAP colored by sample/donor reveals whether cells cluster by biological 
+similarity (good) or technical factors (bad). This baseline informs whether to proceed with 
+integration and allows quantitative assessment of integration improvement.
 
-Verified by: Code review of sample processing loop and output generation.
+Verified by: Code review of merge and visualization implementation.
