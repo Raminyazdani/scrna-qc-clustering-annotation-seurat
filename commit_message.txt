@@ -1,24 +1,27 @@
-Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(data): Load all bone marrow samples and apply QC filtering
+Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(processing): Process all 4 samples through complete analysis pipeline
 
-Implemented data loading for all 4 bone marrow samples (2 BMMC replicates from one donor, 2 CD34+ 
-samples from different donors) and applied the chosen QC filtering strategy consistently across 
-all samples.
+Applied the complete processing pipeline (work_sample_seurat function) to each QC-filtered sample 
+individually, generating sample-specific results and removing doublets before multi-sample integration.
 
-Modified scrna_analysis.r to add execution code:
-- Set data folder: relative_path_data <- "data"
-- Load 4 samples with complete metadata:
-  * GSM4138872_scRNA_BMMC_D1T1.rds (Donor 1, BMMC replicate 1, Male)
-  * GSM4138873_scRNA_BMMC_D1T2.rds (Donor 1, BMMC replicate 2, Male)
-  * GSM4138874_scRNA_CD34_D2T1.rds (Donor 2, CD34+ enriched, Female)
-  * GSM4138875_scRNA_CD34_D3T1.rds (Donor 3, CD34+ enriched, Female)
-- Calculate QC metrics for all samples (mt%, hb%, rb%, ERCC%)
-- Apply chosen QC strategy (outlier + threshold combined) consistently
-- Generate per-sample QC violin plots for visual assessment
-- Save QC-filtered samples list for downstream processing
+Modified scrna_analysis.r to add:
+- Loop applying work_sample_seurat() to each of 4 QC-filtered samples
+- Parallel processing of samples where possible for efficiency
+- Per-sample outputs generated:
+  * PCA plots with variance explained
+  * Elbow plots showing optimal PC selection
+  * UMAP plots colored by clusters, QC metrics, and metadata
+  * t-SNE plots for cross-validation of structure
+  * Feature plots showing key QC metrics and genes
+  * Doublet detection results and removal statistics
+- Save processed samples list: samples_seurats_list_qc_finished.rds
 
-Loading all samples enables comparison of QC distributions across samples and ensures consistent 
-filtering. Metadata tracking (donor, sex, cell type) is essential for identifying and correcting 
-batch effects. The 4 samples represent 2 biological conditions (BMMC vs CD34+) with appropriate 
-replication for statistical analysis.
+Processing samples individually before integration allows critical quality checks: (1) identify 
+sample-specific patterns or problems, (2) assess each sample's quality independently, (3) verify 
+good cell type representation in each sample, (4) detect technical issues that might affect 
+integration, (5) ensure doublet removal worked properly in each sample.
 
-Verified by: Code review of sample loading and QC application.
+Individual sample clustering reveals whether cell types are present across samples or sample-
+specific, informing integration strategy. This step is essential quality control before pooling 
+samples.
+
+Verified by: Code review of sample processing loop and output generation.
