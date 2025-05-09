@@ -1,26 +1,26 @@
-Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(integration): Identify integration anchors across samples
+Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(integration): Integrate samples using anchors for batch effect removal
 
-Implemented the first phase of Seurat integration: identifying mutual nearest neighbors (anchors) 
-across samples that represent shared cell states. These anchors guide batch effect correction.
+Completed Seurat integration by using identified anchors to correct for batch effects while 
+preserving biological variation between cell types and conditions.
 
 Modified scrna_analysis.r to add:
-- Prepare sample list for integration workflow
-- Select integration features (2000 most variable genes shared across samples)
-- FindIntegrationAnchors() implementation:
-  * Canonical Correlation Analysis (CCA) for dimensionality reduction
-  * Identify mutual nearest neighbors (MNN) across sample pairs
-  * Score anchor confidence based on neighborhood consistency
-  * Filter low-quality anchors
-- Visualize anchor distribution across samples to verify quality
-- Save anchors object for integration step
+- IntegrateData() using computed anchors to create corrected expression matrix
+- Re-run PCA on integrated data (captures biological variation)
+- Re-run clustering on integrated space with multiple resolutions
+- Re-run UMAP on integrated data for visualization
+- Generate comprehensive comparison plots:
+  * Side-by-side UMAP: uncorrected vs corrected colored by sample
+  * Side-by-side UMAP: uncorrected vs corrected colored by cluster
+  * Quantify mixing metrics (sample entropy within clusters)
+- Save as merged_samples_corrected.rds
 
-Anchor identification is the critical first step of Seurat integration. Anchors should represent 
-cells in the same biological state across samples, not shared technical artifacts. CCA identifies 
-shared sources of variation while downweighting sample-specific variation.
+Batch correction using anchors removes technical differences (donor, batch effects) while preserving 
+biological differences (BMMC vs CD34+, cell type variation). The integration should improve mixing 
+of samples while maintaining separation of biologically distinct cell types.
 
-Mutual nearest neighbors (cells that are each other's nearest neighbors across samples) provide 
-robust anchor points. These anchors act as correspondence points to align samples while preserving 
-biological differences. Anchor scoring ensures only high-confidence correspondences are used, 
-preventing incorrect alignment that could distort biology.
+Visual comparison shows whether integration improved sample mixing. Before integration, cells may 
+cluster by sample/donor (technical). After integration, cells should cluster by biology (cell type). 
+Quantitative mixing metrics verify improvement. Seurat integration is considered gold standard for 
+scRNA-seq batch correction, balancing batch removal with biological preservation.
 
-Verified by: Code review of anchor finding implementation and parameters.
+Verified by: Code review of integration implementation and comparison visualizations.
