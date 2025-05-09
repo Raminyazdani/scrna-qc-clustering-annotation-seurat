@@ -1,27 +1,26 @@
-Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(integration): Merge all samples without batch correction for baseline
+Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(integration): Identify integration anchors across samples
 
-Merged all 4 processed samples into a single Seurat object without batch correction, creating 
-a baseline to evaluate whether batch effects exist and whether batch correction is necessary.
+Implemented the first phase of Seurat integration: identifying mutual nearest neighbors (anchors) 
+across samples that represent shared cell states. These anchors guide batch effect correction.
 
 Modified scrna_analysis.r to add:
-- Simple merge() of all 4 samples into single object
-- Re-run normalization and scaling on merged data
-- PCA on merged object using variable features
-- Clustering on merged data with multiple resolutions
-- UMAP visualization colored by multiple variables:
-  * Sample origin (to visualize batch effects)
-  * Cluster assignments
-  * Donor ID (to see donor-specific patterns)
-  * Cell type/condition (BMMC vs CD34+)
-- Save as merged_samples_uncorrected.rds
+- Prepare sample list for integration workflow
+- Select integration features (2000 most variable genes shared across samples)
+- FindIntegrationAnchors() implementation:
+  * Canonical Correlation Analysis (CCA) for dimensionality reduction
+  * Identify mutual nearest neighbors (MNN) across sample pairs
+  * Score anchor confidence based on neighborhood consistency
+  * Filter low-quality anchors
+- Visualize anchor distribution across samples to verify quality
+- Save anchors object for integration step
 
-Creating an uncorrected baseline is essential for evaluating integration quality. If samples 
-already mix well without correction, aggressive batch correction may not be needed and could 
-remove biological signal. If samples show strong separation by technical variables (donor, batch), 
-then integration is necessary.
+Anchor identification is the critical first step of Seurat integration. Anchors should represent 
+cells in the same biological state across samples, not shared technical artifacts. CCA identifies 
+shared sources of variation while downweighting sample-specific variation.
 
-Visual inspection of UMAP colored by sample/donor reveals whether cells cluster by biological 
-similarity (good) or technical factors (bad). This baseline informs whether to proceed with 
-integration and allows quantitative assessment of integration improvement.
+Mutual nearest neighbors (cells that are each other's nearest neighbors across samples) provide 
+robust anchor points. These anchors act as correspondence points to align samples while preserving 
+biological differences. Anchor scoring ensures only high-confidence correspondences are used, 
+preventing incorrect alignment that could distort biology.
 
-Verified by: Code review of merge and visualization implementation.
+Verified by: Code review of anchor finding implementation and parameters.
