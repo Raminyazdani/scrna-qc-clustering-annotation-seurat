@@ -1,26 +1,27 @@
-Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(integration): Integrate samples using anchors for batch effect removal
+Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(annotation): Implement automated cell type annotation using SingleR
 
-Completed Seurat integration by using identified anchors to correct for batch effects while 
-preserving biological variation between cell types and conditions.
+Integrated SingleR for automated cell type annotation using established reference datasets, 
+providing unbiased cell type labels based on reference transcriptomes.
 
 Modified scrna_analysis.r to add:
-- IntegrateData() using computed anchors to create corrected expression matrix
-- Re-run PCA on integrated data (captures biological variation)
-- Re-run clustering on integrated space with multiple resolutions
-- Re-run UMAP on integrated data for visualization
-- Generate comprehensive comparison plots:
-  * Side-by-side UMAP: uncorrected vs corrected colored by sample
-  * Side-by-side UMAP: uncorrected vs corrected colored by cluster
-  * Quantify mixing metrics (sample entropy within clusters)
-- Save as merged_samples_corrected.rds
+- Convert Seurat to SingleCellExperiment format for SingleR compatibility
+- Run SingleR with HumanPrimaryCellAtlasData reference (broad cell types)
+- Run SingleR with BlueprintEncodeData reference (immune focus)
+- Add both annotation sets to Seurat object metadata
+- Generate UMAP plots colored by automated annotations from each reference
+- Calculate cell type proportions:
+  * Per sample (identify sample composition differences)
+  * Per condition (BMMC vs CD34+ comparison)
+- Confusion matrix comparing two reference annotations for validation
 
-Batch correction using anchors removes technical differences (donor, batch effects) while preserving 
-biological differences (BMMC vs CD34+, cell type variation). The integration should improve mixing 
-of samples while maintaining separation of biologically distinct cell types.
+SingleR performs reference-based automated annotation by comparing each cell's transcriptome to 
+reference datasets with known labels. Uses correlation-based scoring to assign labels. Running 
+multiple references provides cross-validation - agreement suggests confident annotation, 
+disagreement suggests ambiguous or novel cell states.
 
-Visual comparison shows whether integration improved sample mixing. Before integration, cells may 
-cluster by sample/donor (technical). After integration, cells should cluster by biology (cell type). 
-Quantitative mixing metrics verify improvement. Seurat integration is considered gold standard for 
-scRNA-seq batch correction, balancing batch removal with biological preservation.
+Automated annotation provides consistent, unbiased labels and serves as essential first pass 
+before manual curation. HumanPrimaryCellAtlas provides broad coverage, BlueprintEncode focuses 
+on immune cells (appropriate for bone marrow). Cell type proportions reveal whether expected cell 
+types are present and whether conditions differ as expected.
 
-Verified by: Code review of integration implementation and comparison visualizations.
+Verified by: Code review of SingleR implementation and reference selection.
