@@ -1,27 +1,27 @@
-Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(annotation): Implement automated cell type annotation using SingleR
+Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(annotation): Implement manual annotation using canonical marker genes
 
-Integrated SingleR for automated cell type annotation using established reference datasets, 
-providing unbiased cell type labels based on reference transcriptomes.
+Added manual cell type annotation using well-established canonical marker genes for bone marrow 
+cell types, providing expert-driven validation of automated annotations.
 
 Modified scrna_analysis.r to add:
-- Convert Seurat to SingleCellExperiment format for SingleR compatibility
-- Run SingleR with HumanPrimaryCellAtlasData reference (broad cell types)
-- Run SingleR with BlueprintEncodeData reference (immune focus)
-- Add both annotation sets to Seurat object metadata
-- Generate UMAP plots colored by automated annotations from each reference
-- Calculate cell type proportions:
-  * Per sample (identify sample composition differences)
-  * Per condition (BMMC vs CD34+ comparison)
-- Confusion matrix comparing two reference annotations for validation
+- Define marker gene sets for major bone marrow cell types:
+  * T cells: CD3D, CD3E, CD4, CD8A (T cell receptor and co-receptors)
+  * B cells: CD19, CD79A, MS4A1/CD20 (B cell lineage markers)
+  * Monocytes: CD14, LYZ, FCGR3A/CD16 (classical and non-classical monocytes)
+  * NK cells: NCAM1/CD56, GNLY, NKG7 (natural killer markers)
+  * HSCs/Progenitors: CD34, KIT, THY1 (stem and progenitor markers)
+  * Dendritic cells: FCER1A, CD1C (DC markers)
+- FeaturePlot() for each marker showing spatial expression patterns
+- DotPlot() showing marker expression across all clusters
+- VlnPlot() for key markers quantifying expression distributions
 
-SingleR performs reference-based automated annotation by comparing each cell's transcriptome to 
-reference datasets with known labels. Uses correlation-based scoring to assign labels. Running 
-multiple references provides cross-validation - agreement suggests confident annotation, 
-disagreement suggests ambiguous or novel cell states.
+Manual annotation uses domain knowledge and established markers from literature. Feature plots 
+reveal which clusters express which markers and their spatial organization. Dot plots provide 
+systematic view of marker-cluster relationships, showing both expression level and fraction of 
+cells expressing.
 
-Automated annotation provides consistent, unbiased labels and serves as essential first pass 
-before manual curation. HumanPrimaryCellAtlas provides broad coverage, BlueprintEncode focuses 
-on immune cells (appropriate for bone marrow). Cell type proportions reveal whether expected cell 
-types are present and whether conditions differ as expected.
+This validates automated annotations - if SingleR called a cluster "T cells" and we see high 
+CD3/CD4/CD8 expression, that confirms the annotation. Discrepancies highlight clusters needing 
+expert curation.
 
-Verified by: Code review of SingleR implementation and reference selection.
+Verified by: Code review of marker gene selections and visualization implementation.
