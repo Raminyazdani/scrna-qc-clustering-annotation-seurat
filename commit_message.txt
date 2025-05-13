@@ -1,27 +1,29 @@
-Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(annotation): Implement manual annotation using canonical marker genes
+Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(annotation): Refine cell type annotations and create consensus labels
 
-Added manual cell type annotation using well-established canonical marker genes for bone marrow 
-cell types, providing expert-driven validation of automated annotations.
+Compared automated (SingleR) and manual (marker-based) annotations, resolved conflicts through 
+expert curation, and created final consensus cell type labels combining strengths of both approaches.
 
 Modified scrna_analysis.r to add:
-- Define marker gene sets for major bone marrow cell types:
-  * T cells: CD3D, CD3E, CD4, CD8A (T cell receptor and co-receptors)
-  * B cells: CD19, CD79A, MS4A1/CD20 (B cell lineage markers)
-  * Monocytes: CD14, LYZ, FCGR3A/CD16 (classical and non-classical monocytes)
-  * NK cells: NCAM1/CD56, GNLY, NKG7 (natural killer markers)
-  * HSCs/Progenitors: CD34, KIT, THY1 (stem and progenitor markers)
-  * Dendritic cells: FCER1A, CD1C (DC markers)
-- FeaturePlot() for each marker showing spatial expression patterns
-- DotPlot() showing marker expression across all clusters
-- VlnPlot() for key markers quantifying expression distributions
+- Systematic comparison of SingleR vs manual marker-based labels
+- Confusion matrix showing agreement/disagreement between methods
+- Identify ambiguous clusters where methods disagree
+- Manual expert curation for conflicted clusters:
+  * Re-examine marker expression
+  * Consider cluster-specific DE genes
+  * Use biological knowledge to resolve conflicts
+- Create final consensus labels combining both approaches
+- Add to metadata as "cell_type_final" for downstream use
+- Generate final UMAP with consensus labels and color scheme
+- Final cell type proportion analysis by sample and condition
 
-Manual annotation uses domain knowledge and established markers from literature. Feature plots 
-reveal which clusters express which markers and their spatial organization. Dot plots provide 
-systematic view of marker-cluster relationships, showing both expression level and fraction of 
-cells expressing.
+Combining automated and manual annotation gives most confident labels. Automated annotation 
+provides consistency and objectivity, avoiding confirmation bias. Manual annotation provides 
+domain expertise and nuanced interpretation that reference-based methods may miss. Consensus 
+approach reduces errors inherent in either method alone.
 
-This validates automated annotations - if SingleR called a cluster "T cells" and we see high 
-CD3/CD4/CD8 expression, that confirms the annotation. Discrepancies highlight clusters needing 
-expert curation.
+Agreement between methods provides confidence. Disagreement highlights areas needing careful 
+expert review. Some cell types (rare, transitional, or novel) may require manual override of 
+automated labels. Final annotated dataset is now ready for biological interpretation and 
+downstream analyses.
 
-Verified by: Code review of marker gene selections and visualization implementation.
+Verified by: Code review of label comparison and consensus creation logic.
