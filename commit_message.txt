@@ -1,29 +1,25 @@
-Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(annotation): Refine cell type annotations and create consensus labels
+Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(de): Add differential expression analysis framework
 
-Compared automated (SingleR) and manual (marker-based) annotations, resolved conflicts through 
-expert curation, and created final consensus cell type labels combining strengths of both approaches.
+Implemented differential expression (DE) analysis framework using Wilcoxon rank-sum test to 
+identify marker genes that distinguish cell types and reveal condition-specific differences.
 
 Modified scrna_analysis.r to add:
-- Systematic comparison of SingleR vs manual marker-based labels
-- Confusion matrix showing agreement/disagreement between methods
-- Identify ambiguous clusters where methods disagree
-- Manual expert curation for conflicted clusters:
-  * Re-examine marker expression
-  * Consider cluster-specific DE genes
-  * Use biological knowledge to resolve conflicts
-- Create final consensus labels combining both approaches
-- Add to metadata as "cell_type_final" for downstream use
-- Generate final UMAP with consensus labels and color scheme
-- Final cell type proportion analysis by sample and condition
+- FindMarkers() wrapper function with optimized parameters
+- Conservative filter criteria for biological relevance:
+  * min.pct = 0.25 (gene must be expressed in ≥25% of cells in at least one group)
+  * logfc.threshold = 0.25 (≥1.19-fold change, log2FC ≥ 0.25)
+- Wilcoxon rank-sum test (default, non-parametric, no normality assumption)
+- Bonferroni correction for multiple testing to control family-wise error rate
+- DE result formatting with gene symbols, fold changes, and adjusted p-values
+- Export functionality for downstream analysis
 
-Combining automated and manual annotation gives most confident labels. Automated annotation 
-provides consistency and objectivity, avoiding confirmation bias. Manual annotation provides 
-domain expertise and nuanced interpretation that reference-based methods may miss. Consensus 
-approach reduces errors inherent in either method alone.
+Differential expression identifies genes that define each cell type (markers) and genes that 
+differ between conditions or states. Wilcoxon test is robust for scRNA-seq data which violates 
+parametric test assumptions (not normally distributed, many zeros, overdispersion).
 
-Agreement between methods provides confidence. Disagreement highlights areas needing careful 
-expert review. Some cell types (rare, transitional, or novel) may require manual override of 
-automated labels. Final annotated dataset is now ready for biological interpretation and 
-downstream analyses.
+Conservative thresholds reduce false positives - requiring 25% expression ensures genes are 
+meaningfully present, 0.25 log-fold-change ensures biological relevance beyond noise. Bonferroni 
+correction (strict) prevents false discoveries in multiple testing. This framework scales to 
+multiple comparisons needed for comprehensive analysis.
 
-Verified by: Code review of label comparison and consensus creation logic.
+Verified by: Code review of DE implementation and threshold selection.
