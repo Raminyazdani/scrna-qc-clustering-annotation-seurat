@@ -1,25 +1,26 @@
-Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(de): Add differential expression analysis framework
+Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(de): Implement multiple DE comparisons with volcano plots
 
-Implemented differential expression (DE) analysis framework using Wilcoxon rank-sum test to 
-identify marker genes that distinguish cell types and reveal condition-specific differences.
+Extended DE analysis to perform multiple biologically relevant comparisons and created rich 
+visualizations for interpreting results. Identifies cell type markers and condition-specific genes.
 
 Modified scrna_analysis.r to add:
-- FindMarkers() wrapper function with optimized parameters
-- Conservative filter criteria for biological relevance:
-  * min.pct = 0.25 (gene must be expressed in ≥25% of cells in at least one group)
-  * logfc.threshold = 0.25 (≥1.19-fold change, log2FC ≥ 0.25)
-- Wilcoxon rank-sum test (default, non-parametric, no normality assumption)
-- Bonferroni correction for multiple testing to control family-wise error rate
-- DE result formatting with gene symbols, fold changes, and adjusted p-values
-- Export functionality for downstream analysis
+- Comparison 1: B cells vs T cells (major lymphoid lineage differences)
+- Comparison 2: T cells vs Monocytes (lymphoid vs myeloid lineage differences)
+- Comparison 3: BMMC vs CD34+ samples (condition/enrichment strategy differences)
+- For each comparison, generate:
+  * Volcano plot (log2 fold-change vs -log10 adjusted p-value)
+  * Label top 10 upregulated genes (highest log2FC, significant)
+  * Label top 10 downregulated genes (lowest log2FC, significant)
+  * Heatmap of top 50 differentially expressed genes
+  * Export complete results as CSV for further analysis
+- Statistical summaries (number of DEGs at different thresholds)
 
-Differential expression identifies genes that define each cell type (markers) and genes that 
-differ between conditions or states. Wilcoxon test is robust for scRNA-seq data which violates 
-parametric test assumptions (not normally distributed, many zeros, overdispersion).
+Multiple comparisons reveal different biological insights. Cell type comparisons identify lineage-
+defining markers and functional differences. Condition comparisons reveal effects of enrichment 
+strategy (BMMC = total bone marrow, CD34+ = stem/progenitor enriched).
 
-Conservative thresholds reduce false positives - requiring 25% expression ensures genes are 
-meaningfully present, 0.25 log-fold-change ensures biological relevance beyond noise. Bonferroni 
-correction (strict) prevents false discoveries in multiple testing. This framework scales to 
-multiple comparisons needed for comprehensive analysis.
+Volcano plots are standard for DE visualization, showing both magnitude (fold-change) and 
+significance (p-value). Heatmaps reveal expression patterns across cells. Exporting results 
+enables pathway analysis, literature comparison, and hypothesis generation.
 
-Verified by: Code review of DE implementation and threshold selection.
+Verified by: Code review of comparison design and visualization implementation.
