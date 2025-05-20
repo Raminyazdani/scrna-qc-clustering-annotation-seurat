@@ -1,26 +1,28 @@
-Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(de): Implement multiple DE comparisons with volcano plots
+Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(enrichment): Implement GO enrichment analysis using enrichR
 
-Extended DE analysis to perform multiple biologically relevant comparisons and created rich 
-visualizations for interpreting results. Identifies cell type markers and condition-specific genes.
+Integrated enrichR for Gene Ontology enrichment analysis of differentially expressed genes, 
+translating gene lists into biological insights about processes, locations, and molecular functions.
 
 Modified scrna_analysis.r to add:
-- Comparison 1: B cells vs T cells (major lymphoid lineage differences)
-- Comparison 2: T cells vs Monocytes (lymphoid vs myeloid lineage differences)
-- Comparison 3: BMMC vs CD34+ samples (condition/enrichment strategy differences)
-- For each comparison, generate:
-  * Volcano plot (log2 fold-change vs -log10 adjusted p-value)
-  * Label top 10 upregulated genes (highest log2FC, significant)
-  * Label top 10 downregulated genes (lowest log2FC, significant)
-  * Heatmap of top 50 differentially expressed genes
-  * Export complete results as CSV for further analysis
-- Statistical summaries (number of DEGs at different thresholds)
+- enrichR integration with three GO databases:
+  * GO_Biological_Process_2021 (what are cells doing?)
+  * GO_Cellular_Component_2021 (where are proteins located?)
+  * GO_Molecular_Function_2021 (what molecular activities?)
+- Enrichment analysis for top 100 DEGs from each comparison
+- Combined p-value scoring for ranking enriched terms
+- Adjusted p-values (Benjamini-Hochberg) for multiple testing correction
+- Bar plots of top 10 enriched terms per ontology per comparison
+- Export complete enrichment results as CSV for further analysis
+- Interpretation guidance in comments
 
-Multiple comparisons reveal different biological insights. Cell type comparisons identify lineage-
-defining markers and functional differences. Condition comparisons reveal effects of enrichment 
-strategy (BMMC = total bone marrow, CD34+ = stem/progenitor enriched).
+GO enrichment translates gene lists into biological meaning. Answers critical questions: "What 
+biological processes distinguish T cells from B cells?" or "What pathways are active in CD34+ 
+cells?" Enrichment statistics reveal whether observed gene overlaps are greater than expected by 
+chance.
 
-Volcano plots are standard for DE visualization, showing both magnitude (fold-change) and 
-significance (p-value). Heatmaps reveal expression patterns across cells. Exporting results 
-enables pathway analysis, literature comparison, and hypothesis generation.
+Using three GO ontologies provides comprehensive functional understanding. Biological Process 
+reveals cellular activities, Cellular Component shows subcellular localization patterns, Molecular 
+Function identifies catalytic and binding activities. This biological context is essential for 
+interpreting results and generating hypotheses for validation.
 
-Verified by: Code review of comparison design and visualization implementation.
+Verified by: Code review of enrichR implementation and ontology selection.
