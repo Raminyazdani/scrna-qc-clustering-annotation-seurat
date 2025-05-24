@@ -1,27 +1,29 @@
-Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | feat(trajectory): Implement trajectory analysis using monocle3
+Ramin Yazdani | Single-Cell RNA-Seq QC and Clustering | main | WIP(docs): Add final documentation and save results
 
-Integrated monocle3 for trajectory inference focusing on lymphoid lineage (HSCs → B/T cells), 
-reconstructing developmental pseudotime to reveal cell state transitions and differentiation paths.
+Saved final integrated and annotated dataset. Created comprehensive README documentation covering 
+the complete analysis pipeline. However, contains path and filename errors that need correction.
 
-Modified scrna_analysis.r to add:
-- Convert Seurat to cell_data_set (monocle3 format) preserving metadata
-- Subset to biologically relevant trajectory: lymphoid lineage (HSCs, B cells, T cells)
-- learn_graph() with partition-based graph abstraction to learn trajectory structure
-- order_cells() to calculate pseudotime ordering along learned trajectory
-- Identify root cells (HSCs/progenitors) based on CD34 expression as differentiation start
-- Comprehensive trajectory visualizations:
-  * Colored by cell type (shows expected developmental progression)
-  * Colored by pseudotime (shows ordering along trajectory)
-  * Colored by sample (verifies trajectory not driven by batch)
-- graph_test() to identify genes varying significantly along pseudotime
-- Plot top trajectory-associated genes showing expression dynamics
+Files Created/Modified:
+- Saved final_annotated.rds - complete annotated Seurat object with all analyses
+- README.md - Major documentation update covering:
+  * Complete pipeline overview with step-by-step descriptions
+  * All analysis sections with line number references to code
+  * Setup and installation instructions for R and packages
+  * Data requirements and expected file locations
+  * Complete list of expected outputs (RDS objects, plots)
+  * Reproducibility notes (random seed, package versions)
+  * Troubleshooting guidance
 
-Trajectory inference reveals developmental relationships and cell state transitions. Particularly 
-relevant for bone marrow where active hematopoiesis occurs. Pseudotime ordering places cells along 
-continuous developmental path from stem cells to mature lymphocytes.
+MISTAKES INTRODUCED:
+- README still references "scbi_ds1/" as data folder (should be "data/")
+- README mentions running from "SCB1 directory" that doesn't exist (should be repo root)
+- README shows script name as "project_script.r" (should be "scrna_analysis.r")
+- Contains academic timeline references (e.g., "week3") in output filenames
 
-Genes varying with pseudotime likely regulate differentiation. These trajectory-associated genes 
-are candidates for experimental validation as differentiation drivers or markers of transitional 
-states.
+These path inconsistencies and academic traces would confuse users trying to reproduce the analysis. 
+Copy-paste errors from academic course context that weren't cleaned up.
 
-Verified by: Code review of monocle3 implementation and trajectory visualization.
+Comprehensive documentation is essential for reproducibility and portfolio presentation, but 
+accuracy is critical. Will be fixed in next commit for portfolio readiness.
+
+Verified by: N/A - contains known errors to be fixed.
