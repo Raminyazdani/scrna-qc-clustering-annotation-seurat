@@ -1,0 +1,10 @@
+TYPE	FILE	LOCATOR	BEFORE_SNIPPET	PROPOSED_CHANGE	RATIONALE	STATUS
+TRACE	project_script.r	line 399	# also in tutorials have been told that this data set has omited the mithocondrial genes, so we can remove it too	# Note: This dataset has omitted the mitochondrial genes	Remove tutorial reference, make comment professional and fix typo	APPLIED
+TRACE	project_script.r	line 1097	saveRDS(corrected, file = "corrected_week3.rds")	saveRDS(corrected, file = "final_annotated.rds")	Remove assignment timeline reference (week3)	APPLIED
+TRACE	project_script.r	line 864	#corrected <-readRDS("./corrected_week3.rds")	#corrected <-readRDS("./final_annotated.rds")	Remove assignment timeline reference (week3) in commented code	APPLIED
+TRACE	project_script.r	line 1133	corrected <- readRDS(file = "corrected_week3.rds")	corrected <- readRDS(file = "final_annotated.rds")	Remove assignment timeline reference (week3)	APPLIED
+RENAME	project_script.r	filename	project_script.r	scrna_analysis.r	Generic filename, use more descriptive name matching project purpose	APPLIED
+RENAME	project_script.r	line 340	relative_path_data <- "scbi_ds1"	relative_path_data <- "data"	Cryptic academic folder name, use standard descriptive name	APPLIED
+DOC	README.md	line 92	cd SCB1	cd /path/to/scrna-qc-clustering-annotation-seurat (or just run from repo root)	Directory SCB1 doesn't exist, appears to be copy-paste error from multi-project context	APPLIED
+DOC	README.md	line 50	Place the RDS files in a `scbi_ds1/` folder within the SCB1 directory	Place the RDS files in a `data/` folder in the repository root	Update to match renamed data folder and remove SCB1 reference	APPLIED
+DOC	README.md	line 96	Rscript project_script.r	Rscript scrna_analysis.r	Update to match renamed script file	APPLIED

@@ -1,0 +1,14 @@
+FILE	LOCATOR	BEFORE_SNIPPET	AFTER_SNIPPET	NOTES
+project_script.r	line 399	# also in tutorials have been told that this data set has omited the mithocondrial genes, so we can remove it too	# Note: This dataset has omitted the mitochondrial genes	Removed tutorial reference, made comment professional, fixed typo (omited→omitted)
+project_script.r	line 340	relative_path_data <- "scbi_ds1"	relative_path_data <- "data"	Renamed data folder from cryptic academic name to standard descriptive name
+project_script.r	line 864	#corrected <-readRDS("./corrected_week3.rds")	#corrected <-readRDS("./final_annotated.rds")	Removed assignment timeline reference (week3) from commented code
+project_script.r	line 1097	saveRDS(corrected, file = "corrected_week3.rds")	saveRDS(corrected, file = "final_annotated.rds")	Removed assignment timeline reference (week3), renamed to descriptive name
+project_script.r	line 1133	corrected <- readRDS(file = "corrected_week3.rds")	corrected <- readRDS(file = "final_annotated.rds")	Removed assignment timeline reference (week3)
+project_script.r	filename	project_script.r	scrna_analysis.r	Renamed from generic name to descriptive name matching project purpose
+README.md	line 41	The script expects data in a `scbi_ds1/` subdirectory	The script expects data in a `data/` subdirectory	Updated to match renamed data folder
+README.md	line 50	Place the RDS files in a `scbi_ds1/` folder within the SCB1 directory	Place the RDS files in a `data/` folder in the repository root	Removed SCB1 directory reference (doesn't exist) and updated folder name
+README.md	line 53	modify lines 348-357 in `project_script.r`	modify lines 348-357 in `scrna_analysis.r`	Updated script filename reference
+README.md	line 92-95	cd SCB1\nRscript project_script.r	# Run from repository root\nRscript scrna_analysis.r	Removed SCB1 directory reference, updated script name, clarified run location
+README.md	line 119	- `corrected_week3.rds` - Final annotated dataset	- `final_annotated.rds` - Final annotated dataset	Updated output filename to match code changes
+README.md	line 140	script works from the SCB1 directory	script works from the repository root	Removed SCB1 reference, clarified working directory
+README.md	line 144	Originally created in an academic setting, now portfolio-ready	(removed)	Removed unnecessary academic context reference
