@@ -1,67 +1,96 @@
-name: "Portfolio + Git Historian (single project folder)"
-description: "Make one folder portfolio-ready + generate git-history snapshots under history/<folder>/"
-title: "[Portfolio+History] <PROJECT_FOLDER>: "
-labels: ["copilot", "portfolio", "git-history"]
+name: Portfolio-ready + Git Historian (Step-expanded + Final completion)
+description: Make the repo portfolio-ready (no feature creep), regenerate Git Historian snapshots with ≥1.5× more steps, then add one final step (N+1) after end-to-end verification/fixes.
+title: "Portfolio / Git Historian (finalize): <REPO_NAME>"
+labels: []
 body:
   - type: markdown
     attributes:
       value: |
-        ## Use this template for ONE top-level folder
-        - Fill **Target folder** with an existing top-level folder name.
-        - This issue is designed for **Copilot Coding Agent**.
-        - Keep requirements tight and folder-scoped.
+        This repository contains **ONE** project.
 
-        **Note:** GitHub Issue Forms cannot auto-insert one field into another field.  
-        If you paste a generated issue body (from the script below), you don’t need to edit anything.
+        **Workflow (strict):**
+        1) Re-check the previous run (deliverables, ledgers, verification, historian correctness)
+        2) Complete any missing portfolio-ready items (no feature creep)
+        3) Regenerate `history/` with **sequential integer steps** and **≥1.5× more steps** than the prior run (if it exists)
+        4) Ensure **every snapshot** has `commit_message.txt` (short + long message) tailored to that step
+        5) Do a final end-to-end verification pass, fix only what is required to make the project fully working, then add **one final step (N+1)**
+
+        **Hard rules:**
+        - No secrets (use env vars + `.env.example`).
+        - No fabricated datasets.
+        - Historian outputs only under `history/`.
+        - Snapshots must exclude both `.git/` and `history/` (no recursion).
+        - Locked inputs remain unchanged (if the repo has locked files).
 
   - type: input
-    id: project_folder
+    id: step_multiplier
     attributes:
-      label: Target project folder (top-level)
-      description: "Exact folder name in repo root. Example: assignment_4"
-      placeholder: "assignment_4"
+      label: Step multiplier target
+      description: "Target multiplier for the number of steps relative to existing history/steps. Use 1.5 unless you have a reason to go higher."
+      value: "1.5"
+      placeholder: "1.5"
     validations:
       required: true
 
-  - type: dropdown
-    id: origin
+  - type: input
+    id: oops_hotfix_pairs
     attributes:
-      label: Project origin
-      description: "Helps framing in naming.txt and README."
-      options:
-        - assignment
-        - course
-        - university
-        - personal
-        - unknown
-      default: 4
+      label: Oops→hotfix pairs to include
+      description: "How many intentional mistake+fix pairs to insert into the historian narrative (intermediate snapshots only)."
+      value: "1"
+      placeholder: "1"
     validations:
       required: true
 
-  - type: checkboxes
-    id: knobs
+  - type: input
+    id: default_branch
     attributes:
-      label: Optional knobs (Copilot may still use best judgment)
-      options:
-        - label: "Allow internal renames when SAFE (update references; keep runnable)"
-        - label: "Require runnable verification (tests / smoke-run if possible)"
-        - label: "If CI/workflows exist in final project, include them in git-history"
+      label: Default branch name for commit messages
+      description: "Used in commit_message.txt short message. Defaults to main."
+      value: "main"
+      placeholder: "main"
+    validations:
+      required: true
 
   - type: textarea
     id: notes
     attributes:
-      label: Special notes (optional)
-      description: "Dataset location, expected outputs, known blockers, etc."
+      label: Optional notes
+      description: |
+        Optional: where you'd like the oops→hotfix inserted (e.g., around path handling, README run commands),
+        and which big steps you want split into smaller ones.
       placeholder: |
-        Example:
-        - Dataset is not included; instructions are in docs/data_source.md
-        - Run command should be executed from project root
+        Example: Insert an oops→hotfix around step 3 (wrong import path), then split documentation+refactor into 3 smaller commits.
+    validations:
+      required: false
 
   - type: textarea
-    id: task_prompt
+    id: job_prompt
     attributes:
-      label: Copilot task prompt (paste the generated prompt here)
-      description: "If you used the script, paste the body here unchanged."
-      placeholder: "Use the script output, or paste your unified super prompt for this folder."
+      label: Job Prompt (paste prompt_job.txt here)
+      description: "Paste the full prompt (prompt_job.txt). This defines deliverables, ledgers, verification, historian rules, and the final completion step."
+      placeholder: "Paste the full prompt_job.txt content here."
     validations:
       required: true
+
+  - type: checkboxes
+    id: acknowledgements
+    attributes:
+      label: Acknowledge constraints
+      options:
+        - label: "No feature creep / preserve original outputs"
+          required: true
+        - label: "No secrets; use env vars + .env.example if needed"
+          required: true
+        - label: "No fabricated datasets; document how to obtain missing data"
+          required: true
+        - label: "Historian outputs only under history/"
+          required: true
+        - label: "Snapshots exclude both history/ and .git/ (no recursion)"
+          required: true
+        - label: "Step directories are sequential integers: step_01..step_N (no decimals)"
+          required: true
+        - label: "Every snapshot contains history/steps/step_XX/commit_message.txt (short+long), tailored per step"
+          required: true
+        - label: "After final fixes, add exactly one final step (N+1) that matches the final working tree"
+          required: true
